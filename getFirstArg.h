@@ -1,0 +1,1 @@
+char *getFirstArg(char *input);
