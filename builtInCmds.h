@@ -1,6 +1,7 @@
-void handle_echo (const char *input);
-void handle_exit (const char *input);
-void handle_type (const char *arg);
-void handle_path (const char *arg);
-void handle_pwd (void);
+void handle_echo (char *input);
+void handle_exit (char *input);
+void handle_type (char *arg);
+void handle_path (char *arg);
+void handle_pwd (char *input);
 void handle_cd (char *input);
+void loopBuiltInCmds(char *arg, char *input);
