@@ -3,7 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "builtInCmds.h"
-#include "getFirstArg.h"
+#include "argControl.h"
+#include "startProcess.h"
 
 int main(int argc, char *argv[]) {
   // Flush after every printf
@@ -20,26 +21,29 @@ int main(int argc, char *argv[]) {
     }
 
     input[strcspn(input, "\n")] = '\0'; // removes newline character (KEEP ABOVE COMMANDS)
-    char *firstArg;
+    char **args = separateArgs(input); //separate all arguments in a string array
 
     if(strlen(input) > 0){
-      //isolate first command
-      firstArg = getFirstArg(input);
+      
+      int execBuiltIn;
       //loop through the built in commands, if match found execute builtin
-      loopBuiltInCmds(firstArg, input);
-	
-      free(firstArg);
-      firstArg = NULL;
+      execBuiltIn = loopBuiltInCmds(args[0], input, args); //returns 1 if a builtin was executed and 0 if not
+      if(!execBuiltIn){ //if command wasn't a built try running the process
+        startProcess(args);
+      }
+
+      freeArgs(args);
       continue;
     }
     else if(strlen(input) == 0){ //user simply hits enter
+      freeArgs(args);
       continue;
-    }
+      }
 
-    printf("%s: command not found\n", input);
+      freeArgs(args);
 
-  
   }
+  
 
   return 0;
   
