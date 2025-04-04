@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "builtInCmds.h"
+#include "argControl.h"
 
   //array of built in commands
   char *builtInList[] = { //order must match builtInFunctions order
@@ -16,7 +17,7 @@
   short numBuiltIns = sizeof(builtInList) / sizeof(char*);
 
   //array of built in command functions
-  void (*builtInFunctions[])(char *) = { //order must match builtInList order
+  void (*builtInFunctions[])(char *, char **) = { //order must match builtInList order
     &handle_echo,
     &handle_exit,
     &handle_type,
@@ -24,7 +25,7 @@
     &handle_cd
   };
 
-  void handle_echo (char *input) {
+  void handle_echo (char *input, char **args) {
     char *message = input + strlen("echo"); // gets everything after "echo"
     
     while (*message == ' ') { // checks if there's a space after echo
@@ -34,11 +35,12 @@
   
   }
   
-  void handle_exit (char *input) {
+  void handle_exit (char *input, char **args) {
+    freeArgs(args);
     exit(0); // exits program
   }
   
-  void handle_type (char *arg) {
+  void handle_type (char *arg, char **args) {
     arg = arg + 5;
     if (strcmp(arg, "echo") == 0) { // check if argument is "echo"
       printf("echo is a shell builtin\n");
@@ -55,7 +57,7 @@
     }
   }
   
-  void handle_path (char *arg) {
+  void handle_path (char *arg, char **args) {
     const char *name = "PATH"; // name of environment variable
     const char *env_p = getenv(name); // gets value of environment variable
     if (env_p == NULL) {
@@ -66,7 +68,7 @@
     }
   }
 
-  void handle_pwd (char *input) {
+  void handle_pwd (char *input, char **args) {
     char dir[100];
     if(getcwd(dir, 100) == NULL){ //gets working directory
       fprintf(stderr, "Failed to get current directory");
@@ -76,7 +78,7 @@
     }
   }
 
-  void handle_cd (char *input) {
+  void handle_cd (char *input, char **args) {
     char prevDir[100];
     char currentDir[100];
     char *newDir = input + 3; //skips past "cd " part of input
@@ -94,11 +96,13 @@
     
   }
 
-  void loopBuiltInCmds(char *arg, char *input) { 
+  int loopBuiltInCmds(char *arg, char *input, char **args) { 
     for(int i = 0; i < numBuiltIns; i++){ //loop through commands
       if(strcmp(arg, builtInList[i]) == 0){ //check if first arg is a built in
-        (*builtInFunctions[i])(input);      //execute the builtin and pass it the full input
+        (*builtInFunctions[i])(input, args);//execute the builtin and pass it the full input
+        return 1; //executed a builtin
       }
     }
+    return 0; //did not execute a builtin
   }
   
