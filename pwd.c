@@ -2,78 +2,66 @@
 #include <string.h>
 #include <stdlib.h>
 
-// A directory location, including the name of the location, whether or not it is part of the working directory, and the next directory location it points to
+/* A directory location, including the name of the location, whether or not it is
+   part of the working directory, and the next directory location it points to */
 typedef struct directory {
-    char name[20]; // Name of the current location
-    unsigned int isPartOfWorkingDir: 1; // Whether or not this is part of the working directory (0 for no, 1 for yes)
-    struct directory *nextPartOfDir; // Pointer to the next part of the directory
+   char name[20]; // Name of the current location
+   unsigned int isPartOfWorkingDir: 1; // Whether or not this node is part of the working directory (0: no, 1: yes)
+   struct directory *nextPartOfDir; // Pointer to the next directory node
+   struct directory *prevPartOfDir; // Pointer to the previous directory node
 } directory;
 
-
 // Prints out the working directory
-void printWorkingDirectory (directory *startingLocation) {
-    for(directory *head = startingLocation; head != NULL && head->isPartOfWorkingDir == 1; head = head->nextPartOfDir) {
-        if(head->isPartOfWorkingDir == 1) {
-            printf("%s\\", head->name);
-        }
-    }
+void printWorkingDirectory(directory *startingLocation) {
+   for(directory *head = startingLocation; head != NULL && head->isPartOfWorkingDir == 1; head = head->nextPartOfDir) {
+      if(head->isPartOfWorkingDir == 1) {
+         printf("%s/", head->name);
+      }
+   }
+   printf("\n");
 }
 
-int main() {
-    char *userInput = malloc(50);
+// Creates a directory node
+void createDirectoryNode(directory **ptrToHead, directory **ptrToTail, char *n) {
+   directory *newDirNode = malloc(sizeof(directory));
+   strcpy(newDirNode->name, n);
+   newDirNode->isPartOfWorkingDir = 0;
+   newDirNode->prevPartOfDir = *ptrToTail;
+   newDirNode->nextPartOfDir = NULL;
+   newDirNode->prevPartOfDir->nextPartOfDir = newDirNode;
+   *ptrToTail = newDirNode;
+}
 
-    directory *lastOne = malloc(sizeof(directory));
-    strcpy(lastOne->name, "lastOne");
-    lastOne->isPartOfWorkingDir = 0;
-    lastOne->nextPartOfDir = NULL;
+// Frees linked list allocated memory
+void freeDirectory(directory *head, directory *tail) {
+   directory *temp = NULL;
 
-    directory *anotherOne = malloc(sizeof(directory));
-    strcpy(anotherOne->name, "anotherOne");
-    anotherOne->isPartOfWorkingDir = 0;
-    anotherOne->nextPartOfDir = lastOne;
+   while(head != NULL) {
+      temp = head->nextPartOfDir;
+      free(head);
+      head = temp;
+   }
+   tail = NULL;
+   free(tail);
+}
 
-    directory *otherArea = malloc(sizeof(directory));
-    strcpy(otherArea->name, "otherArea");
-    otherArea->isPartOfWorkingDir = 0;
-    otherArea->nextPartOfDir = anotherOne;
+int main(void) {
+   char *userInput = malloc(50);
 
-    directory *nextArea = malloc(sizeof(directory));
-    strcpy(nextArea->name, "nextArea");
-    nextArea->isPartOfWorkingDir = 0;
-    nextArea->nextPartOfDir = otherArea;
+   // Create home directory node
+   directory *head = malloc(sizeof(directory));
+   strcpy(head->name, "home");
+   head->isPartOfWorkingDir = 1;
+   head->nextPartOfDir = NULL;
+   head->prevPartOfDir = NULL;
+   directory *tail = head;
 
-    directory *home = malloc(sizeof(directory));
-    strcpy(home->name, "home");
-    home->isPartOfWorkingDir = 1;
-    home->nextPartOfDir = nextArea;
-    
-    printf("Starting working directory:\n");
-    printWorkingDirectory(home);
+   createDirectoryNode(&head, &tail, "nextArea");
+   createDirectoryNode(&head, &tail, "otherArea");
+   createDirectoryNode(&head, &tail, "anotherOne");
+   createDirectoryNode(&head, &tail, "lastOne");
 
-    nextArea->isPartOfWorkingDir = 1;
-    printf("\n\nAfter adding on to the working directory:\n");
-    printWorkingDirectory(home);
+   printWorkingDirectory(head);
 
-    nextArea->isPartOfWorkingDir = 0;
-    otherArea->isPartOfWorkingDir = 1;
-    printf("\n\nProof that it ends at the first instance of 0:\n");
-    printWorkingDirectory(home);
-
-    nextArea->isPartOfWorkingDir = 1;
-    otherArea->isPartOfWorkingDir = 1;
-    anotherOne->isPartOfWorkingDir = 1;
-    lastOne->isPartOfWorkingDir = 1;
-    printf("\n\nAll of them:\n");
-    printWorkingDirectory(home);
-
-    printf("\n\nStarting on otherArea:\n");
-    printWorkingDirectory(otherArea);
-
-    free(home);
-    free(nextArea);
-    free(otherArea);
-    free(anotherOne);
-    free(lastOne);
-
-    return 0;
+   freeDirectory(head, tail);
 }
