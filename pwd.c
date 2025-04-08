@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "directory.h"
 #include "pwd.h"
 
 // Prints out the working directory
