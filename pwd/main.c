@@ -22,4 +22,6 @@ int main(void) {
    printWorkingDirectory(head);
 
    freeDirectory(head, tail);
+
+   return 0;
 }
