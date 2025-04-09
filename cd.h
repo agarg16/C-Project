@@ -1,1 +1,1 @@
-void changeDirectory(int argc, char *argv[]);
+void changeDirectory(int argc, char *argv[], directory *head);
