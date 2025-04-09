@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[]) {
+int changeDirectory(int argc, char *argv[]) {
    int numForwardSlashes = 0;
    int lastSlash = 0;
    if(argc > 2) {
