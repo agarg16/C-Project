@@ -10,11 +10,13 @@ int main(int argc, char *argv[]) {
    char ch = getopt(argc, argv, "h");
 
    // Create home directory node
-   directory *head = malloc(sizeof(directory));
-   strcpy(head->name, "home\0");
-   head->isPartOfWorkingDir = 1;
-   head->nextPartOfDir = NULL;
-   head->prevPartOfDir = NULL;
+   directory *home = malloc(sizeof(directory));
+   strcpy(home->name, "home\0");
+   home->isPartOfWorkingDir = 1;
+   home->nextPartOfDir = NULL;
+   home->prevPartOfDir = NULL;
+   
+   directory *head = home;
    directory *tail = head;
 
    // Creates all other nodes in the directory linked list
@@ -37,7 +39,8 @@ int main(int argc, char *argv[]) {
         strcpy(command, argv[1]);
         
         if(strcmp(command, "cd") == 0) { // The user uses the cd command
-            changeDirectory(argc, argv);
+            changeDirectory(argc, argv, head);
+            printWorkingDirectory(head);
          }
          else if(strcmp(command, "pwd") == 0) { // The user uses the pwd command
             printWorkingDirectory(head);
