@@ -16,7 +16,7 @@ void printWorkingDirectory(directory *startingLocation) {
 
 // Creates a directory node
 void createDirectoryNode(directory **ptrToHead, directory **ptrToTail, char *n) {
-   directory *newDirNode = malloc(sizeof(directory));
+directory *newDirNode = malloc(sizeof(directory));
    strcpy(newDirNode->name, n);
    newDirNode->isPartOfWorkingDir = 0;
    newDirNode->prevPartOfDir = *ptrToTail;
@@ -35,5 +35,4 @@ void freeDirectory(directory *head, directory *tail) {
       head = temp;
    }
    tail = NULL;
-   free(tail);
 }
