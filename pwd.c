@@ -5,14 +5,7 @@
 #include "pwd.h"
 
 // Prints out the working directory
-void printWorkingDirectory(directory *startingLocation) {
-   for(directory *head = startingLocation; head != NULL && head->isPartOfWorkingDir == 1; head = head->nextPartOfDir) {
-      if(head->isPartOfWorkingDir == 1) {
-         printf("/%s", head->name);
-      }
-   }
-   printf("\n");
-}
+void printWorkingDirectory(void) { printf("%s\n", getenv("USER_DIRECTORY")); }
 
 // Creates a directory node
 void createDirectoryNode(directory **ptrToHead, directory **ptrToTail, char *n) {

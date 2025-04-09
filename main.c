@@ -16,6 +16,9 @@ int main(int argc, char *argv[]) {
    home->nextPartOfDir = NULL;
    home->prevPartOfDir = NULL;
    
+   // Set environment variable representing the user's directory to default home location
+   setenv("USER_DIRECTORY", "/home", 1);
+   
    directory *head = home;
    directory *tail = head;
 
@@ -40,10 +43,10 @@ int main(int argc, char *argv[]) {
         
         if(strcmp(command, "cd") == 0) { // The user uses the cd command
             changeDirectory(argc, argv, head);
-            printWorkingDirectory(head);
+            printWorkingDirectory();
          }
          else if(strcmp(command, "pwd") == 0) { // The user uses the pwd command
-            printWorkingDirectory(head);
+            printWorkingDirectory();
          }
          else if(strcmp(command, "exit") == 0) { // The user uses the exit command
             return 0;

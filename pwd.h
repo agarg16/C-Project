@@ -1,5 +1,5 @@
 // Prints out the working directory
-void printWorkingDirectory(directory *startingLocation);
+void printWorkingDirectory(void);
 
 
 // Creates a directory node

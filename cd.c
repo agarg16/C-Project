@@ -47,6 +47,20 @@ void changeDirectory(int argc, char *argv[], directory *head) {
             startingChar = &(argv[2][i + 1]);
          }
       }
+      
+      // Set environment variable representing the user's directory to default home location
+      char word[strlen(argv[2]) + 1];
+      strcpy(word, "/");
+      strcat(word, argv[2]);
+      
+      if(argv[2][strlen(argv[2]) - 1] == '/') {
+        word[strlen(word) - 1] = '\0'; // Removes the extra forward slash at the end
+        
+        setenv("USER_DIRECTORY", word, 1);
+      }
+      else {
+        setenv("USER_DIRECTORY", word, 1);
+      }
    }
    else {
       fprintf(stderr, "Not enough arguments for %s", argv[1]);
