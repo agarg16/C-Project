@@ -11,12 +11,13 @@ int main(int argc, char *argv[]) {
 
    // Create home directory node
    directory *head = malloc(sizeof(directory));
-   strcpy(head->name, "home");
+   strcpy(head->name, "home\0");
    head->isPartOfWorkingDir = 1;
    head->nextPartOfDir = NULL;
    head->prevPartOfDir = NULL;
    directory *tail = head;
 
+   // Creates all other nodes in the directory linked list
    createDirectoryNode(&head, &tail, "nextArea");
    createDirectoryNode(&head, &tail, "otherArea");
    createDirectoryNode(&head, &tail, "anotherOne");
@@ -31,17 +32,22 @@ int main(int argc, char *argv[]) {
       printf(" - exit: Exit the program\n");
    }
    else {
-      if(strcmp(argv[1], "cd") == 0) { // The user uses the cd command
-          changeDirectory(argc, argv);
-       }
-       else if(strcmp(argv[1], "pwd") == 0) { // The user uses the pwd command
-          printWorkingDirectory(head);
-       }
-       else if(strcmp(argv[1], "exit") == 0) { // The user uses the exit command
-          return 0;
-       }
-       else {
-          fprintf(stderr, "Did not select valid command");
+      if(argc > 1) {
+        char command[strlen(argv[1])];
+        strcpy(command, argv[1]);
+        
+        if(strcmp(command, "cd") == 0) { // The user uses the cd command
+            changeDirectory(argc, argv);
+         }
+         else if(strcmp(command, "pwd") == 0) { // The user uses the pwd command
+            printWorkingDirectory(head);
+         }
+         else if(strcmp(command, "exit") == 0) { // The user uses the exit command
+            return 0;
+         }
+         else {
+            fprintf(stderr, "Did not select valid command");
+         }
        }
    }
    
