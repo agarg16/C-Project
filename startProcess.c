@@ -18,7 +18,7 @@ void startProcess(char **args){
     }
     else if(pid == 0){ //child process
         if(execvp(args[0], args) == -1){ //run new process
-            fprintf(stderr, "command not found\n"); //if process not found or error kill child and free args
+            fprintf(stderr, "Error: %s", errno, strerror(errno)); //if process not found or error kill child and free args
         }
         freeArgs(args);
         exit(1);
