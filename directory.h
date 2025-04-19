@@ -6,3 +6,15 @@ typedef struct directory {
    struct directory *nextPartOfDir; // Pointer to the next directory node
    struct directory *prevPartOfDir; // Pointer to the previous directory node
 } directory;
+
+typedef union argValues {
+  char *nodeName;
+  directory **curTail;
+  int workingDir: 1;
+} input;
+
+// Creates a directory node
+void createDirectoryNode(int argCount, ...);
+
+// Frees linked list allocated memory
+void freeDirectory(directory *head, directory *tail);
