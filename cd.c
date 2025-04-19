@@ -5,64 +5,58 @@
 #include "directory.h"
 
 void changeDirectory(int argc, char *argv[], directory *head) {
-   int numForwardSlashes = 0;
-   int lastSlash = 0;
-   
-   // Ensures user entered enough arguments to provide a directory
-   if(argc > 2) {
-      char *startingChar = argv[2];
+  int numForwardSlashes = 0;
+  int lastSlash = 0;
+  char word[strlen(argv[2]) + 1];
+  strcpy(word, argv[2]);
+  word[strlen(argv[2])] = '\0';
 
-      // Iterates through every character in the full directory the user provides
-      for(int  i = 0; i < strlen(argv[2]); i++) {
-         /* If the entirety of a directory location name's characters has been read (since
-         separated by '/' characters, allowing for user to not enter '/' for final location) */
-         if(argv[2][i] == '/' || (i == strlen(argv[2]) - 1)) {
-            lastSlash = i + 1;
-            numForwardSlashes++;
-            
-            char *word = malloc(sizeof(argv[2]));
-            if(argv[2][i] == '/') { 
-              strncpy(word, startingChar, &argv[2][i] - startingChar);
-            }
-            else { // argv[2][i] == last character of directory location
-              strncpy(word, startingChar, &argv[2][i] - startingChar + 1);
-            }
-            
-            // If the first directory location is not home, exit function
-            if(strcmp(head->name, word) != 0 && numForwardSlashes == 1) { 
-              fprintf(stderr, "Invalid default directory location. Setting directory to: /%s\n", head->name);
-              return;
-            }
-            
-            /* Finds the matching node name to the current word and sets isPartOfWorkingDir to true
-              (home node always true) */
-            for(directory *nextPtr = head; nextPtr != NULL; nextPtr = nextPtr->nextPartOfDir) {
-              if(strcmp(nextPtr->name, word) == 0) {
-                nextPtr->isPartOfWorkingDir = 1;
-              }
-            }
-            
-            /* Repeats process with the next directory location by changing the starting
-            character to the start of the new directory location */
-            startingChar = &(argv[2][i + 1]);
-         }
-      }
+  if(strlen(word) > 0) {
+    if(argv[2][strlen(argv[2]) - 1] == '/') {
+      word[strlen(word) - 1] = '\0'; // Removes the extra forward slash at the end
+      setenv("USER_DIRECTORY", word, 1);
+    }
+    else {
+      setenv("USER_DIRECTORY", word, 1);
+    }
+  
+    char *startWord = word;
+    char *endWord = startWord + 1;
+    directory *tempHead = head;
+    directory *nextPtr = tempHead;
+
+    for(directory *i = head; i != NULL && endWord != NULL; i = i->nextPartOfDir) {
+      startWord = endWord;
+      endWord = strchr(endWord, '/');
       
-      // Set environment variable representing the user's directory to default home location
-      char word[strlen(argv[2]) + 1];
-      strcpy(word, "/");
-      strcat(word, argv[2]);
-      
-      if(argv[2][strlen(argv[2]) - 1] == '/') {
-        word[strlen(word) - 1] = '\0'; // Removes the extra forward slash at the end
+      if(endWord != NULL) {
+        char shortenedWord[endWord - startWord + 1]; // Accommodates the '\0' character at the end
+        shortenedWord[endWord - startWord] = '\0';
+        strncpy(shortenedWord, startWord, endWord - startWord);
+        startWord = endWord + 1;
         
-        setenv("USER_DIRECTORY", word, 1);
+        for(nextPtr = i; nextPtr != NULL; nextPtr = nextPtr->nextPartOfDir) {
+          if(strcmp(nextPtr->name, shortenedWord) == 0) { // The node name is the same as the specific directory location being looked at
+            nextPtr->isPartOfWorkingDir = 1;
+            tempHead = nextPtr;
+          }
+          else {
+            nextPtr->isPartOfWorkingDir = 0;
+          }
+        }
+        endWord = endWord + 1;
       }
-      else {
-        setenv("USER_DIRECTORY", word, 1);
+      else if(strcmp(tempHead->nextPartOfDir->name, startWord) == 0) {
+          tempHead->nextPartOfDir->isPartOfWorkingDir = 1;
+          return;
       }
-   }
-   else {
-      fprintf(stderr, "Not enough arguments for %s", argv[1]);
-   }
+    }
+    
+    if(tempHead->nextPartOfDir != NULL) {
+      tempHead->nextPartOfDir->isPartOfWorkingDir = 0;
+    }
+  }
+  else {
+    fprintf(stderr, "Not enough arguments for %s\n", argv[1]);
+  }
 }
