@@ -29,19 +29,6 @@ void forkCMDs(char *input) {
                 fprintf(stderr, "%s\n", strerror(errno));
             }
         }
-        else { // cd function
-            char *firstWordStart = input;
-            char *firstWord = malloc((inputIndex1 - firstWordStart) * sizeof(char *));
-            strncpy(firstWord, firstWordStart, inputIndex1 - firstWordStart);
-
-            firstWord[inputIndex1 - firstWord] = '\0'; // Ensures terminating character in array
-
-            char *args[] = { "./main", firstWord, inputIndex1 + 1, "1", NULL };
-
-            if(execvp(args[0], args) == -1) {
-                fprintf(stderr, "%s\n", strerror(errno));
-            }
-        }
     }
     else { // Parent Process
         char word[strlen(input) + 1];
@@ -52,10 +39,27 @@ void forkCMDs(char *input) {
         wpid = wait(&status);
 
         if(strcmp(word, "exit") != 0) {
-            char *args[] = { "./main", "run", "-t", NULL };
+            if(strstr(word, "cd") != NULL) {
+                char *inputIndex1;
+                inputIndex1 = strchr(input, ' ');
+                char *firstWordStart = input;
+                char *firstWord = malloc((inputIndex1 - firstWordStart) * sizeof(char *));
+                strncpy(firstWord, firstWordStart, inputIndex1 - firstWordStart);
 
-            if(execvp(args[0], args) == -1) {
-                fprintf(stderr, "%s\n", strerror(errno));
+                firstWord[inputIndex1 - firstWord] = '\0'; // Ensures terminating character in array
+
+                char *args[] = { "./main", firstWord, inputIndex1 + 1, NULL };
+
+                if(execvp(args[0], args) == -1) {
+                    fprintf(stderr, "%s\n", strerror(errno));
+                }
+            }
+            else {
+                char *args[] = { "./main", "run", "-t", NULL };
+
+                if(execvp(args[0], args) == -1) {
+                    fprintf(stderr, "%s\n", strerror(errno));
+                }
             }
         }
     }
