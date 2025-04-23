@@ -9,6 +9,7 @@
 #include "sigint.h"
 
 int main(int argc, char *cmd[]) {
+    signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
     if (argc > 1 && strcmp(cmd[1], "run") == 0) { // Initial main function call
         char ch = getopt(argc, cmd, "th"); // Accepted characters of t for terminal and h for help
 
@@ -18,8 +19,7 @@ int main(int argc, char *cmd[]) {
 
         if(strcmp(userRunCmd, "run") == 0 || strcmp(userRunCmd, "RUN") == 0 ) {
             if(ch == 't') {
-                signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
-                printf("\n$ ");
+                printf("$ ");
                 char input[101];
                 input[100] = '\0'; // Ensures terminating character in array
                 fgets(input, sizeof(input), stdin);
@@ -53,7 +53,7 @@ int main(int argc, char *cmd[]) {
         commandName[strlen(commandName)] = '\0';
 
         if(strstr(commandName, "pwd") != NULL) {
-            printf("Working Directory: %s", printWorkingDirectory());
+            printWorkingDirectory();
             return 0;
         }
         else if(strcmp(commandName, "cd") == 0) {
@@ -95,21 +95,21 @@ int main(int argc, char *cmd[]) {
                 }
             }
 
-            printf("Directory changed to: %s", changeDirectory(curPath, head));
+            changeDirectory(curPath, head);
+
+            //printf("Directory changed to: %s\n", changeDirectory(curPath, head));
+            //printf("Proof: %s\n", printWorkingDirectory());
 
             freeDirectory(head, tail); // Frees the directory linked list
 
-            return 0;
+            char *args[] = {"./main", "run", "-t"};
+            main(3, args);
         }
         else if(strstr(commandName, "exit") != NULL) {
             printf("Exiting...\n");
             exitTerminal();
 
             return 0;
-        }
-        else {
-            fprintf(stderr, "Invalid command entered.");
-            return 1;
         }
     }
     else { // Error
