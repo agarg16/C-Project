@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "cmds.h"
 
-char * printWorkingDirectory() {
+void printWorkingDirectory() {
     char *dir;
     if(getenv("USER_DIRECTORY") != NULL) {
         dir = malloc(sizeof(getenv("USER_DIRECTORY")));
@@ -15,7 +15,7 @@ char * printWorkingDirectory() {
         dir = getenv("PWD");
     }
 
-    return dir;
+    printf("%s\n", dir);
 }
 
 char * changeDirectory(char *input, directory *head) {
@@ -34,7 +34,7 @@ char * changeDirectory(char *input, directory *head) {
       setenv("USER_DIRECTORY", word, 1);
     }
   
-    char *startWord = getenv("USER_DIRECTORY");
+    char *startWord = getenv("PWD");
     char *endWord = startWord + 1;
     directory *tempHead = head;
     directory *nextPtr = tempHead;
@@ -77,6 +77,8 @@ char * changeDirectory(char *input, directory *head) {
         strcat(newEnvVarName, "/");
         strcat(newEnvVarName, ptr->name);
     }
+
+    setenv("USER_DIRECTORY", newEnvVarName, 1);
 
     return newEnvVarName;
 }
