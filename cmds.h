@@ -4,7 +4,7 @@
 void printWorkingDirectory();
 
 // Changes the directory (CD Command)
-char * changeDirectory(char *input, directory *head);
+void changeDirectory(char *input, directory *head);
 
 // Exits the terminal
 void exitTerminal();
