@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include "fork.h"
@@ -19,6 +20,7 @@ int main(int argc, char *cmd[]) {
 
         if(strcmp(userRunCmd, "run") == 0 || strcmp(userRunCmd, "RUN") == 0 ) {
             if(ch == 't') {
+                printWorkingDirectory(1);
                 printf("$ ");
                 char input[101];
                 input[100] = '\0'; // Ensures terminating character in array
@@ -53,7 +55,7 @@ int main(int argc, char *cmd[]) {
         commandName[strlen(commandName)] = '\0';
 
         if(strstr(commandName, "pwd") != NULL) {
-            printWorkingDirectory();
+            printWorkingDirectory(0);
             printf("\n");
             return 0;
         }
@@ -100,8 +102,10 @@ int main(int argc, char *cmd[]) {
 
             freeDirectory(head, tail); // Frees the directory linked list
 
-            char *args[] = {"./main", "run", "-t"};
-            main(3, args);
+            char *args[] = {"./main", "run", "-t", NULL};
+            if(execvp(args[0], args) == -1) {
+                fprintf(stderr, "%s\n", strerror(errno));
+            }
         }
         else if(strstr(commandName, "exit") != NULL) {
             printf("Exiting...\n");
