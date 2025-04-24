@@ -1,7 +1,7 @@
 #include "directory.h"
 
 // Returns the working directory
-void printWorkingDirectory();
+void printWorkingDirectory(int forTerminalInput);
 
 // Changes the directory (CD Command)
 void changeDirectory(char *input, directory *head);
