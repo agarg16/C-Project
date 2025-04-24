@@ -3,12 +3,22 @@
 #include <stdlib.h>
 #include "cmds.h"
 
-void printWorkingDirectory() {
+void printWorkingDirectory(int forTerminalInput) {
     if(getenv("USER_DIRECTORY") != NULL) {
-        printf("%s", getenv("USER_DIRECTORY"));
+        if(forTerminalInput == 1 && (strlen(getenv("USER_DIRECTORY")) > strlen(getenv("HOME")))) {
+          printf("~");
+          printf("%s", getenv("USER_DIRECTORY") + strlen(getenv("HOME")));
+        }
+        else { printf("%s", getenv("USER_DIRECTORY")); }
     }
     else {
-        printf("%s", getenv("PWD"));
+        if(forTerminalInput == 1 && (strlen(getenv("PWD")) > strlen(getenv("HOME")))) {
+          printf("~");
+          printf("%s", getenv("PWD") + strlen(getenv("HOME")));
+        }
+        else {
+          printf("%s", getenv("PWD"));
+        }
     }
 }
 
