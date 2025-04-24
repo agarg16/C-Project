@@ -4,21 +4,15 @@
 #include "cmds.h"
 
 void printWorkingDirectory() {
-    char *dir;
     if(getenv("USER_DIRECTORY") != NULL) {
-        dir = malloc(sizeof(getenv("USER_DIRECTORY")));
-        dir = getenv("USER_DIRECTORY");
-        setenv("USER_DIRECTORY", dir, 1);
+        printf("%s", getenv("USER_DIRECTORY"));
     }
     else {
-        dir = malloc(sizeof(getenv("PWD")));
-        dir = getenv("PWD");
+        printf("%s", getenv("PWD"));
     }
-
-    printf("%s\n", dir);
 }
 
-char * changeDirectory(char *input, directory *head) {
+void changeDirectory(char *input, directory *head) {
     int numForwardSlashes = 0;
     int lastSlash = 0;
     char word[strlen(input) + 1];
@@ -72,15 +66,13 @@ char * changeDirectory(char *input, directory *head) {
       tempHead->nextPartOfDir->isPartOfWorkingDir = 0;
     }
 
-    char *newEnvVarName = malloc(sizeof(input));
+    char *newEnvVarName = malloc(sizeof(input) + sizeof(char));
     for(directory *ptr = head; ptr != NULL  && ptr->isPartOfWorkingDir == 1; ptr = ptr->nextPartOfDir) {
         strcat(newEnvVarName, "/");
         strcat(newEnvVarName, ptr->name);
     }
-
+    
     setenv("USER_DIRECTORY", newEnvVarName, 1);
-
-    return newEnvVarName;
 }
 
 // Exits the terminal
