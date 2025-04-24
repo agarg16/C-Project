@@ -19,7 +19,17 @@ int main(int argc, char *cmd[]) {
 
         if(strcmp(userRunCmd, "run") == 0 || strcmp(userRunCmd, "RUN") == 0 ) {
             if(ch == 't') {
-                printf("$ ");
+                char *pwdDir = printWorkingDirectory();
+
+                // Only prints ~/ when the working directory includes more than just the home directory
+                if(strlen(pwdDir) > strlen(getenv("HOME"))) {
+                    pwdDir = pwdDir + strlen(getenv("HOME"));
+                    printf("~%s$ ", pwdDir);
+                }
+                else {
+                    printf("%s$ ", pwdDir);
+                }
+                
                 char input[101];
                 input[100] = '\0'; // Ensures terminating character in array
                 fgets(input, sizeof(input), stdin);
@@ -53,7 +63,13 @@ int main(int argc, char *cmd[]) {
         commandName[strlen(commandName)] = '\0';
 
         if(strstr(commandName, "pwd") != NULL) {
-            printWorkingDirectory();
+            char *dir = malloc(sizeof(printWorkingDirectory()));
+            strcpy(dir, printWorkingDirectory());
+            dir[strlen(dir)] = '\0'; // Ensures terminating character is in char array
+
+            printf("%s\n", dir);
+            free(dir);
+            dir = NULL;
             return 0;
         }
         else if(strcmp(commandName, "cd") == 0) {
@@ -96,9 +112,6 @@ int main(int argc, char *cmd[]) {
             }
 
             changeDirectory(curPath, head);
-
-            //printf("Directory changed to: %s\n", changeDirectory(curPath, head));
-            //printf("Proof: %s\n", printWorkingDirectory());
 
             freeDirectory(head, tail); // Frees the directory linked list
 
