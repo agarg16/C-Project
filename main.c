@@ -54,6 +54,7 @@ int main(int argc, char *cmd[]) {
 
         if(strstr(commandName, "pwd") != NULL) {
             printWorkingDirectory();
+            printf("\n");
             return 0;
         }
         else if(strcmp(commandName, "cd") == 0) {
@@ -96,9 +97,6 @@ int main(int argc, char *cmd[]) {
             }
 
             changeDirectory(curPath, head);
-
-            //printf("Directory changed to: %s\n", changeDirectory(curPath, head));
-            //printf("Proof: %s\n", printWorkingDirectory());
 
             freeDirectory(head, tail); // Frees the directory linked list
 
