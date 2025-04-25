@@ -5,12 +5,16 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include "cmds.h"
+#include "catart.h"
 
-/* SIGINT handled by replacing current execvp with a new version,
-   ensuring the user stays within mock terminal but allowing them
-   to enter a different command */
-void handle_sigint (int sig) {
-   write(1, "\nSIGINT USED\n", sizeof("SIGINT USED\n"));
-   // still need to write what we want to have happen during the counting file
+void handle_sigint(int sig) {
+    printf("\n Process interrupted (Ctrl+C), Returning to terminal.\n");
+    fflush(stdout);
+//     char *args[] = { "./main", "run", "-t", NULL }; // Arguments to re-run the terminal command (simulates typing "./main run -t" again)
+//     execvp(args[0], args); // execvp replaces the current process image with a new process image (restarts terminal shell)
+
+//     // if execvp fails
+//     fprintf(stderr, "Failed to restart terminal: %s\n", strerror(errno));
+//     exit (1);
 }
+

@@ -1,5 +1,5 @@
-main: fork.o main.o cmds.o directory.o sigint.o argControl.o
-	gcc -o main fork.o main.o cmds.o directory.o sigint.o argControl.o
+main: fork.o main.o cmds.o directory.o sigint.o catart.o tabcomp.o
+	gcc -o main fork.o main.o cmds.o directory.o sigint.o catart.o tabcomp.o
 fork.o: fork.c
 	gcc -c fork.c
 main.o: main.c
@@ -10,5 +10,7 @@ directory.o: directory.c
 	gcc -c directory.c
 sigint.o: sigint.c
 	gcc -c sigint.c
-argControl.o: argControl.c
-	gcc -c argControl.c
+catart.o: catart.c
+	gcc -c catart.c
+tabcomp.o: tabcomp.c
+	gcc -c tabcomp.c
