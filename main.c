@@ -4,13 +4,18 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <errno.h>
 #include "fork.h"
 #include "cmds.h"
 #include "sigint.h"
+#include "catart.h"
 
 int main(int argc, char *cmd[]) {
+//    signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
     if (argc > 1 && strcmp(cmd[1], "run") == 0) { // Initial main function call
-        char ch = getopt(argc, cmd, "th"); // Accepted characters of t for terminal and h for help
+        
+        char *opt_args[] = {cmd[0], cmd[2], NULL}; // pass only t or h options to getopt
+        char ch = getopt(argc, opt_args, "th"); // Accepted characters of t for terminal and h for help
 
         char userRunCmd[strlen(cmd[1]) + 1];
         strcpy(userRunCmd, cmd[1]); // Gets the (potential) run command from the user
@@ -18,12 +23,13 @@ int main(int argc, char *cmd[]) {
 
         if(strcmp(userRunCmd, "run") == 0 || strcmp(userRunCmd, "RUN") == 0 ) {
             if(ch == 't') {
-                signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
-                printf("\n$ ");
-                char input[101];
-                input[100] = '\0'; // Ensures terminating character in array
-                fgets(input, sizeof(input), stdin);
-                forkCMDs(input); // Forks to re-run main function with the desired command
+                 printWorkingDirectory(1);
+                 printf(" $ ");
+                 char input[101];
+                 input[strcspn(input, "\n")] = 0; // Remove trailing newline character from input
+                 input[100] = '\0'; // Ensures terminating character in array
+                 fgets(input, sizeof(input), stdin);
+                 forkCMDs(input); // Forks to re-run main function with the desired command
             }
             else if(ch == 'h') {
                 printf("List of Initial Command Options:\n");
@@ -33,6 +39,7 @@ int main(int argc, char *cmd[]) {
                 printf("List of Terminal Command Options:\n");
                 printf(" - cd:   Change the current working directory\n");
                 printf(" - pwd:  Print the current working directory\n");
+                printf(" - catnap: Start a timer for a user-specified number of seconds\n");
                 printf(" - exit: Exit the program\n");
                 
                 return 0;
@@ -53,14 +60,16 @@ int main(int argc, char *cmd[]) {
         commandName[strlen(commandName)] = '\0';
 
         if(strstr(commandName, "pwd") != NULL) {
-            printf("Working Directory: %s", printWorkingDirectory());
+            printWorkingDirectory(0);
+            printf("\n");
             return 0;
         }
         else if(strcmp(commandName, "cd") == 0) {
             char *curPath = cmd[2];
             char *startWord = curPath;
             char *endWord = startWord + 1;
-            char *word = malloc(sizeof(curPath));
+            char word[strlen(curPath)];
+            
             strcpy(word, "home"); // Initializes with a default home name for the directory
             
             endWord = strchr(endWord, '/');
@@ -95,20 +104,26 @@ int main(int argc, char *cmd[]) {
                 }
             }
 
-            printf("Directory changed to: %s", changeDirectory(curPath, head));
+            changeDirectory(curPath, head);
 
             freeDirectory(head, tail); // Frees the directory linked list
 
-            return 0;
+            char *args[] = {"./main", "run", "-t", NULL};
+            if(execvp(args[0], args) == -1) {
+                fprintf(stderr, "%s\n", strerror(errno));
+            }
+        }
+        else if(strstr(commandName, "catnap") != NULL) {
+            int seconds = 0;
+            catNapTimer(seconds); // Starts the catnap timer with user input
         }
         else if(strstr(commandName, "exit") != NULL) {
             printf("Exiting...\n");
             exitTerminal();
-
             return 0;
         }
         else {
-            fprintf(stderr, "Invalid command entered.");
+            fprintf(stderr, "Invalid command entered.\n");
             return 1;
         }
     }

@@ -6,10 +6,10 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "sigint.h"
+#include "cmds.h"
 
 // Forks the mock terminal to run commands in separate processes
 void forkCMDs(char *input) {
-    signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
     pid_t pid;
     pid_t wpid;
 
@@ -44,6 +44,7 @@ void forkCMDs(char *input) {
         }
     }
     else { // Parent Process
+        signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
         char word[strlen(input) + 1];
         strcpy(word, input);
         word[strlen(word) - 1] = '\0';
@@ -51,12 +52,17 @@ void forkCMDs(char *input) {
         int status = 0;
         wpid = wait(&status);
 
-        if(strcmp(word, "exit") != 0) {
-            char *args[] = { "./main", "run", "-t", NULL };
+         if(strcmp(word, "exit") != 0) {
+             char *args[] = { "./main", "run", "-t", NULL };
 
-            if(execvp(args[0], args) == -1) {
-                fprintf(stderr, "%s\n", strerror(errno));
-            }
-        }
+             if(execvp(args[0], args) == -1) {
+                 fprintf(stderr, "%s\n", strerror(errno));
+             }
+         }
+         else {
+            exitTerminal(); // Exit the terminal
+            printf("Exiting...\n");
+        }  
+
     }
 }
