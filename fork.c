@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "argControl.h"
 
 // Forks the mock terminal to run commands in separate processes
@@ -17,6 +18,7 @@ void forkCMDs(char **input) {
         return;
     }
     else if(pid == 0) { // Child Process
+        signal(SIGINT, SIG_DFL); //new process gets terminated when receiving SIGINT
         if(execvp(input[0], input) == -1){ //run new process
             fprintf(stderr, "Error: %s", strerror(errno)); //if process not found or error
         }
