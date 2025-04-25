@@ -76,10 +76,12 @@ void changeDirectory(char *input, directory *head) {
       tempHead->nextPartOfDir->isPartOfWorkingDir = 0;
     }
 
-    char *newEnvVarName = malloc(sizeof(input) + sizeof(char));
-    for(directory *ptr = head; ptr != NULL  && ptr->isPartOfWorkingDir == 1; ptr = ptr->nextPartOfDir) {
-        strcat(newEnvVarName, "/");
-        strcat(newEnvVarName, ptr->name);
+    char newEnvVarName[strlen(input) + 1];
+    strcpy(newEnvVarName, "");
+
+    for(directory *ptr = head; ptr != NULL && ptr->isPartOfWorkingDir == 1; ptr = ptr->nextPartOfDir) {
+      strcat(newEnvVarName, "/");
+      strcat(newEnvVarName, ptr->name);
     }
     
     setenv("USER_DIRECTORY", newEnvVarName, 1);
