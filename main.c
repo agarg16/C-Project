@@ -63,7 +63,8 @@ int main(int argc, char *cmd[]) {
             char *curPath = cmd[2];
             char *startWord = curPath;
             char *endWord = startWord + 1;
-            char *word = malloc(sizeof(curPath));
+            char word[strlen(curPath)];
+            
             strcpy(word, "home"); // Initializes with a default home name for the directory
             
             endWord = strchr(endWord, '/');
