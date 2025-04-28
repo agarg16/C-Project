@@ -9,6 +9,7 @@
 #include "cmds.h"
 #include "sigint.h"
 #include "argControl.h"
+#include "catart.h"
 
 int main(int argc, char *cmd[]) {
     signal(SIGINT, handle_sigint); // Set up signal handler for SIGINT (Ctrl+C)
@@ -92,6 +93,10 @@ int main(int argc, char *cmd[]) {
                             freeArgs(args);
                             exitTerminal();
                         }
+                        else if(strcmp(args[0], "catnap") == 0) {
+                            int seconds = 0;
+                            catNapTimer(seconds); // Starts the catnap timer with user input
+                        }
                         else {
                             fprintf(stderr, "Error: invalid command entered\n");
                         }
@@ -107,6 +112,7 @@ int main(int argc, char *cmd[]) {
                 printf("List of Terminal Command Options:\n");
                 printf(" - cd:   Change the current working directory\n");
                 printf(" - pwd:  Print the current working directory\n");
+                printf(" - catnap: Start a timer for a user-specified number of seconds\n");
                 printf(" - exit: Exit the program\n");
                 break;
             default:
