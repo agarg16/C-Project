@@ -1,10 +1,13 @@
 #include "directory.h"
 
-// Returns the working directory
+// Prints the working directory
 void printWorkingDirectory(int forTerminalInput);
 
-// Changes the directory (CD Command)
+// Changes the directory
 void changeDirectory(char *input, directory *head);
+
+// Displays a cat nap timer
+void catNapTimer(int seconds);
 
 // Exits the terminal
 void exitTerminal();
