@@ -58,7 +58,7 @@ char **separateArgs(char *input) {
 
 // Check if arg is a "built-in" command or not
 int loopBuiltInCmds(char *arg) {
-    char *builtInList[] = { "exit", "pwd", "cd" };
+    char *builtInList[] = { "exit", "pwd", "cd", "catnap" };
     const int builtInListSize = sizeof(builtInList) / sizeof(char *);
 
     // Ensures no newline character saved in char array
