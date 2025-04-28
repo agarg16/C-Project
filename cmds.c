@@ -32,7 +32,6 @@ void changeDirectory(char *input, directory *head) {
   
     char *startWord = input + 1;
     char *endWord = strchr(startWord, '/');
-//    directory *tempHead = head;
     directory *nextPtr = head;
 
     for(directory *i = head; i != NULL; i = i->nextPartOfDir) {
