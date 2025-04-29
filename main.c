@@ -117,10 +117,13 @@ int main(int argc, char *cmd[]) {
                 break;
             default:
                 fprintf(stderr, "Error: invalid option selected. Please type \"./main run -h\" for initial and terminal command options.\n");
-        }
+                freeDirectory(head, tail);
+                return 1;
+            }
     }
     else { // Not enough arguments to run the mock terminal
         fprintf(stderr, "Too few arguments entered. Please type \"./main run -h\" for initial and terminal command options.\n");
+        freeDirectory(head, tail);
         return 1;
     }
 
