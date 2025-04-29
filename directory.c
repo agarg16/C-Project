@@ -22,9 +22,15 @@ void createDirectoryNode(int argCount, ...) {
    newDirNode->prevPartOfDir->nextPartOfDir = newDirNode;
    
    *args.curTail = newDirNode;
-   
-   args.workingDir = va_arg(list, int);
-   newDirNode->isPartOfWorkingDir = args.workingDir;
+
+   if(argCount > 2) {
+      args.workingDir = va_arg(list, int);
+      newDirNode->isPartOfWorkingDir = args.workingDir;
+   }
+   else {
+      args.workingDir = 0;
+      newDirNode->isPartOfWorkingDir = args.workingDir;
+   }
 }
 
 // Frees linked list allocated memory
