@@ -110,10 +110,10 @@ int main(int argc, char *cmd[]) {
                 printf(" - ./main run -h: Provides a list of options running that the ./main program allows\n");
                 
                 printf("List of Terminal Command Options:\n");
-                printf(" - cd:   Change the current working directory\n");
-                printf(" - pwd:  Print the current working directory\n");
+                printf(" - cd:     Change the current working directory\n");
+                printf(" - pwd:    Print the current working directory\n");
                 printf(" - catnap: Start a timer for a user-specified number of seconds\n");
-                printf(" - exit: Exit the program\n");
+                printf(" - exit:   Exit the program\n");
                 break;
             default:
                 fprintf(stderr, "Error: invalid option selected. Please type \"./main run -h\" for initial and terminal command options.\n");
